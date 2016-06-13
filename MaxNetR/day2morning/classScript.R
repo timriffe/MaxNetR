@@ -64,6 +64,7 @@ range(HFD$Age)
 library(reshape2)
 
 # acast() creates an array from a long piece of data. It uses a formula syntax:
+# (this avoids a loop)
 HFDarray <- acast(HFD, Age~Year~CNTRY, value.var = "ASFR")
 dim(HFDarray)
 dimnames(HFDarray)
@@ -100,12 +101,12 @@ matplot(ages,HFDarray[,,"SWE"],
 
 # can we highlight a time trend?
 
-years <- as.integer(colnames(HFDarray))
+years     <- as.integer(colnames(HFDarray))
 # how about we highlight every 5th year using some color gradient?
 
-yr5 <- years[years %% 5 == 0] # introducing modulo!
+yr5       <- years[years %% 5 == 0] # introducing modulo!
 # these are integers, but we need characters to select:
-yr5c <- as.character(yr5)
+yr5c      <- as.character(yr5)
 # Make a color ramp:
 library(RColorBrewer)
 display.brewer.all()
@@ -118,7 +119,7 @@ length(yr5) # uh oh, we need more blues!!
 # 1) give it a vector of colors
 # 2) tell it which color space to interpolate over:
 # 3) it spits back a ramp function for you
-myramp <- colorRampPalette(mypalette, space = "Lab")
+myramp   <- colorRampPalette(mypalette, space = "Lab")
 # it works like this: just ask for N colors 
 # and it will interpolate through the space you gave
 # and give you N colors in 'even' intervals.
@@ -201,5 +202,31 @@ matplot(ages,HFDarray[, ,"SWE"],
 # locator(1)
 text(28, .13, "undulations?", col = "magenta", srt = -35, cex = 2)
 ################################################################
+# stuff to expand:
+
+# 1) TFR for each year and country, plot as lines.
+# (this avoids a loop)
+TFR <- apply(HFDarray, 3, colSums)
+matplot(years, TFR, type = 'l', lty = 1, col = "#00000050")
+
+# 1.1) what is the average TFR per year in the HFD?
+# (this avoids a loop)
+lines(years, rowMeans(TFR, na.rm = TRUE), col = "red")
+
+# 1.2) what is the population-weighted average TFR per year?
+
+Bx <- acast(HFD, Age~Year, sum, value.var = "Births")
+Ex <- acast(HFD, Age~Year, sum, value.var = "Exposure")
+Fx <- Bx / Ex
+# OK, so bigger countries are having a bigger swing up?
+lines(years, colSums(Fx), col = "blue")
+
+# 2) MAB for each year and country, plot as lines
+
+# 3) look at surface: are those really undulations?
+#    Hypothesis: these are postponements, and each implies
+#    a temporary drop in period measures. If you look
+#    at cohort rates, they might not look like undulations at all
+
 
 
