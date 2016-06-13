@@ -7,6 +7,10 @@ output:
     author: "Tim Riffe"
 ---
 
+```{r, results = 'hide'}
+opts_chunk$set(comment = NA)
+```
+
 ## Why R? What is R anyway?
 
 R is older than you, and its growth has been exponential. It has an enthusiastic community and a nice way of self-maintaining over time. Lots of research teams that didn't use to use R now do because it's: free, fast, and it's easy to solve problems without having an expert on-hand. 
@@ -85,7 +89,100 @@ R also has your standard values, such as `NA` (all kinds of missing), `NaN` (not
 
 In R you can have tons of objects in your session, each callable by its name. Again, there are many kinds of objects, and you can invent new ones. We'll talk about `list`s, `vector`s, `data.frame`s, `matrix`(c)es, and maybe `array`s. Again, these data structures are like containers, with names.
 
-### `list`s
+### `list` objects
 
+Lists are the most general and flexible object in R, with the drawback that they can be awkward to work with. How so?
+
+```{r}
+mylist <- list(a = 1:5,
+               b = "my_name",
+               c = pi,
+               d = list(a = rnorm(1000), b = .001),
+               e = matrix(0,5,5))
+str(mylist)
+# you can access the parts in different ways:
+mylist[["a"]]
+mylist[[1]]
+mylist$c
+# you can remove parts like so:
+mylist$c <- NULL
+# you can over-write like so:
+mylist$e <- 1
+str(mylist)
+```
+
+Lots going on there. Lists are very free-form. When I use R I see them in two common circumstances: 1) I have a list of identically structured objects where I want to calculate the same thing for each element of the list (these might be lifetables) 2) you use a statistical function in R that returns tons of output in the form of a list.
+
+### `vector` objects
+
+While lists are the most free-form, vectors are the most basic. Vectors must always be of the same data type, and each element of a vector can only be a single value, not an entire object.
+
+```{r}
+v1 <- runif(100)
+v1
+length(v1)
+mean(v1)
+
+# this is how to make one by hand:
+v2 <- c(1,5,8)
+
+# replace an element:
+v1[1:3] <- v2
+# or
+v1[length(v1)] <- pi
+
+# cut down:
+v1 <- v1[20:30]
+# or explicitly:
+v1 <- v1[-c(1:3)]
+v1 # not much left!
+
+# and they can be appended like so:
+v3 <- c(v1,v2,rnorm(8))
+v3
+```
+
+If you're doing matrix stuff, vectors are treated as column vectors by default. Let's move on.
+
+### `data.frame` objects
+`data.frame`s are very very common in R. These are like tables in a spreadsheet. Each column is the same length, and you can index by both columns and rows. The columns do not need to be of the same type of data. 
+
+```{r}
+# = to assign in functions!!!
+cheapdf <- data.frame(age = 0:100, sex = "f", pop = runif(101)*1e3)
+# look at the top:
+head(cheapdf)
+tail(cheapdf)
+# you can index in many ways:
+plot(cheapdf$age, cheapdf$pop)
+
+# index by value
+cheapdf$pop[cheapdf$age > 90]
+# index by position:
+cheapdf[1:5,3]
+# bottom right corner
+cheapdf[nrow(cheapdf),ncol(cheapdf)]
+
+# or some combo (you can access it like a list too)
+cheapdf[[1]]
+# eliminate a column
+cheapdf[[2]] <- NULL
+
+# stick one on:
+cheapdf <- cbind(cheapdf,sex="f")
+head(cheapdf)
+
+# always good to have dims in mind!
+dim(cheapdf)
+```
+
+### `matrix` objects:
+
+And finally, matrices. Matrices are very useful. They are like `data.frames` except they must always be of the same dimension, and there are only two useful ways of indexing in them (position, and named-dimension):
+
+```{r}
+mat  <- matrix(runif(36), ncol = 6)
+mat
+```
 
 
