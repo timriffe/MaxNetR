@@ -1,0 +1,91 @@
+---
+title: "Day 1 Morning"
+output:
+  html_document:
+    toc: true
+    theme: united
+    author: "Tim Riffe"
+---
+
+## Why R? What is R anyway?
+
+R is older than you, and its growth has been exponential. It has an enthusiastic community and a nice way of self-maintaining over time. Lots of research teams that didn't use to use R now do because it's: free, fast, and it's easy to solve problems without having an expert on-hand. 
+
+R is a rather high-level language, meaning that it's largely based on and built atop other languages. Usually when writing R code, you do so in a live R session, interactively. That helps you verify what you're doing as you do it. Once the code gets humming you might turn it into proper functions and document it for sharing (aka package it). And that's how R grows, via user-developed packages. Here's one from your dear instructor:
+
+```{r, eval = FALSE}
+# a bunch of stuff will print to the console
+install.packages("HMDHFDplus")
+# now you have the package:
+library(HMDHFDplus)
+```
+Literally, it's that easy to get someone else's package, assuming that it's in the main repository. I think we might use this package for example data from time to time. Let's take a look at CRAN, Stack Overflow, and github. 
+
+There are many ways to access R, and Rstudio is the best one probably. Let's take a look around.
+
+## Data Types
+
+First, let's looks at some of the basic kinds of data types and data objects that you'll frequently use in R. Think of data types as how values are stored, sort of like being explicit about the value format of a cell in a spreadsheet. Objects are like containers for values, and there are different kinds. Let's just get rolling.
+
+You can use R to calculate stuff:
+
+```{r}
+.001 * exp(.07*70)
+# functions use parentheses
+```
+But the value that R produces is not saved anywhere. But at least you got the answer. If you want to keep the result, then assign it:
+
+```{r}
+ans <- .001 * exp(.07*70)
+ans
+# when sqrt() gets fed ans, it's getting the value that ans evaluates to, 
+# *not* the above equation.
+sqrt(ans)
+# what kind of data is ans?
+typeof(ans)
+```
+`ans` is an object. The value of `ans` is some sort of data type, `double` in this case
+
+You can also use `=` to assign, but the arrow makes the direction of assignment explicit. Most R-folk use the arrow. If it's assigned, then you can use it like a number. You can change its value:
+
+```{r}
+ans <- 5
+ans
+# R is picky about naming:
+Ans <- 6
+ans == Ans
+```
+
+You always need to be exact when referring to named things. And FYI `==` is the way to _ask_ if two things are equal. Anyway,R does stuff other than numbers, of course. Here are some character strings:
+
+```{r}
+# some character stuff
+first.name <- "Tim"
+last.name <-"Riffe"
+paste(last.name, first.name, sep = ", ")
+typeof(first.name)
+```
+
+R has many other data types, like dates `?Date`, factors (categorical vars for regressions) `?factor`, and different kinds of number formats, such as `integer`, `numeric`, `double`, and `complex`. Here are some tips: Don't bother coding stuff as `factor`, and instead use `character`, data types. Functions that expect `factor` data will correctly interpret `character` data, but sometimes not vice versa. Also, you rarely need to care about what number format you're using. Stuff tends to work itself out and you can afford to be lazy about it at this point in time. So, we're going to stick to `character` and `numeric` data for the rest of this tutorial.
+
+Help files are easy to call up, and tend to be written in a systematic way. We'll use them very frequently. Seriously, very frequently. 
+
+You can coerce most data types and data objects to other data types and objects using `as.blabla`, where `blabla` is the destination data type or object.
+```{r}
+# to get a help file, just do
+help("as.character")
+# or
+?as.character
+as.character(1)
+```
+
+R also has your standard values, such as `NA` (all kinds of missing), `NaN` (not a number), `Inf`, `pi`, and others.
+
+## Data Objects
+
+In R you can have tons of objects in your session, each callable by its name. Again, there are many kinds of objects, and you can invent new ones. We'll talk about `list`s, `vector`s, `data.frame`s, `matrix`(c)es, and maybe `array`s. Again, these data structures are like containers, with names.
+
+### `list`s
+
+
+
