@@ -7,9 +7,6 @@ output:
     author: "Tim Riffe"
 ---
 
-```{r, results = 'hide'}
-opts_chunk$set(comment = NA)
-```
 
 ## Why R? What is R anyway?
 
@@ -183,6 +180,29 @@ And finally, matrices. Matrices are very useful. They are like `data.frames` exc
 ```{r}
 mat  <- matrix(runif(36), ncol = 6)
 mat
+# assign some fake names:
+dimnames(mat) <- list(1:6,letters[1:6])
+mat
+
+# add it up
+sum(mat)
+
+# index it: (rows then columns)
+mat[1:2,3:4]
+
+# elementwise operations
+mat / 2
+
+# some convenient functions:
+colSums(mat)
+rowMeans(mat)
+
+# vectors go into the rows, elementwise by default:
+mat1 <- mat / rowMeans(mat)
+rowSums(mat1)
+
+matplot(mat1,type='l')
+matplot(t(mat1),type='l')
 ```
 
-
+That's enough basics for now
