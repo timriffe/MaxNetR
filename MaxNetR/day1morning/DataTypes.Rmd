@@ -1,10 +1,12 @@
 ---
 title: "Day 1 Morning"
 output:
+  pdf_document:
+    toc: yes
   html_document:
-    toc: true
-    theme: united
     author: "Tim Riffe"
+    theme: united
+    toc: yes
 ---
 
 

@@ -1,0 +1,37 @@
+Variable,Inic.,Fin.,Long.,Descripción,Tipo de campo - Valores válidos
+CPROI,1,2,2,Código Provincia de Inscripción,Numérico entre 01 y 52 e igual al código de la provincia en la que se está grabando.
+CMUNI,3,5,3,Código Municipio de Inscripción (para municipios mayores de 10.000 habitantes),"Blanco o numérico, compatible con diccionario geográfico. No se admiten ""000"" ni ""999""."
+MESN,6,7,2,Mes-fecha de nacimiento,"Numérico, entre 01 y 12. "
+ANON,8,11,4,Año-fecha de nacimiento,Numérico.
+SEXO,12,12,1,Sexo ,"Numérico: 1=varón, 6= mujer."
+MESDEF,13,14,2,Mes-fecha de la defunción,"Numérico, entre 01 y 12. "
+ANODEF,15,18,4,Año-fecha de la defunción,Numérico.
+NACIONALIDAD,19,19,1,Nacionalidad,"0=no consta,1=española, 2= extranjera."
+PAISNAC,20,22,3,Código país nacionalidad del fallecido,"Numérico, compatible con diccionario de países: 108 para español, 999 para no consta, 555 para apátridas y blanco si NACIONALIDAD=0."
+LUGNAC,23,23,1,Lugar de nacimiento del fallecido,"0=no consta,1=España, 2= Extranjero."
+CPRON,24,25,2,Código provincia nacimiento  del fallecido,"Blanco o numérico, entre 01 y 52, 99 para no consta."
+CMUNN,26,28,3,Código municipio nacimiento  del fallecido (para municipios mayores de 10.000 habitantes),"Blanco o numérico compatible con diccionario geográfico, 999 para no consta."
+PAISNX,29,31,3,Código país de nacimiento extranjero del fallecido,"Blanco o numérico, compatible con diccionario de países: 999 para no consta, 555 para apátridas"
+LUGRES,32,32,1,Lugar de residencia del fallecido,"1=España, 2=Extranjero."
+CPRORE,33,34,2,Código provincia de residencia del fallecido,Blanco o numérico entre 01-52. 
+CMUNRE,35,37,3,Código municipio residencia del fallecido (para municipios mayores de 10.000 habitantes),Blanco o numérico  compatible con diccionario geográfico.
+PAISREX,38,40,3,Código de país de residencia extranjero del fallecido,"Blanco o numérico, compatible con diccionario de países: 999 para no consta"
+ECIV,41,41,1,"Estado civil del fallecido ( 1, 2, 3, 4)  Soltero/a, Casado/a, Viudo/a, Divorciado/a",Numérico . 1=Soltero/a; 2=Casado/a; 3=Viudo/a; 4=Divorciado/a. No blanco
+CODPROF,42,43,2,"Código autoasignado de la profesión, oficio u ocupación principal del fallecido (01 a 14; 00 para no consta o personas que no pueden ser clasificadas).","Numérico o blanco. 01= Fuerzas armadas; 02= Dirección de las empresas y de las administraciones públicas; 03= Técnicos y profesionales científicos e intelectuales; 04=Técnicos y profesionales de apoyo; 05= Empleados de tipo administrativo; 06= Trabajadores de los servicios de restauración; 07= Trabajadores cualificados en la agricultura y la pesca; 08= Artesanos y trabajadores cualificados de las industrias manufactureras, la construcción, y la minería, excepto los operadores de instalaciones y maquinaria; 09= Operadores de instalaciones y maquinaria y montadores; 10= Trabajadores no cualificados; 11= Estudiantes; 12= Personas que realizan o comparten las tareas del hogar; 13= Pensionistas/rentistas; 14= Parados; 00= Personas que no pueden ser clasificadas o no consta. "
+AÑOSC,44,46,3,Años cumplidos,Numérico
+MESESC,47,48,2,Meses cumplidos (para menores de un año),Numérico
+DIASC,49,50,2,Dias cumplidos (para menores de un mes),Numérico
+TAMAMUNI,51,51,1,Tamaño municipio  inscripción,1=Municipio menor o igual a 10.000 habitantes; 2= De 10.001 a 20.000; 3= De 20.001 a 50.000; 4= De 50.001 a 100.000; 5= Mayor de 100.000; 6= capital de provincia
+TAMAMUNINAC,52,52,1,Tamaño municipio nacimiento,0= No consta;1=Municipio menor o igual a 10.000 habitantes; 2= De 10.001 a 20.000; 3= De 20.001 a 50.000; 4= De 50.001 a 100.000; 5= Mayor de 100.000; 6= capital de provincia
+TAMAMUNIRES,53,53,1,Tamaño municipio residencia,1=Municipio menor o igual a 10.000 habitantes; 2= De 10.001 a 20.000; 3= De 20.001 a 50.000; 4= De 50.001 a 100.000; 5= Mayor de 100.000; 6= capital de provincia
+TAMAPAIS NACIMI,54,54,1,Tamaño pais nacimiento,1=Desagregado; 2= Resto de países; 3= No consta 
+TAMAPAIS RESIDE,55,55,1,Tamaño pais residencia,1=Desagregado; 2= Resto de países; 3= No consta 
+TAMAPAIS NACIONA,56,56,1,Tamaño pais nacionalidad,1=Desagregado; 2= Resto de países; 3= No consta 
+CBAS1,57,57,1,1er carácter del código de causa básica,Alfabético
+CBAS23,58,59,2,2º y 3er carácter del código de causa básica,Numérico
+CBAS4,60,60,1,4º carácter del código de causa básica,Numérico o blanco
+CAUSAR,61,63,3,causa de mortalidad reducida (102 grupos),
+CAUSAP,64,65,2,Causa de mortalidad perinatal ( 93 grupos),
+CAUSAINF,66,67,2,Causa de mortalidad infantil (54 grupos) para menores de 1 año,
+NESTUDIOS,68,69,2,"Nivel de estudios. 01-12, 99","Numérico. 01=Analfabetos;02=Estudios primarios incompletos; 03=Educación primaria; 04=Primera etapa de educación secundaria y similar; 05=Segunda etapa de educación secundaria con orientación general;06=Segunda etapa de educación secundaria con orientación profesional;08=Enseñanzas de formación profesional, artes plásticas y diseño y deportivas de grado superior y equivalentes; títulos propios universitarios que precisan del título de bachiller, de duración igual o superior a 2 años; 09=Grados universitarios de 240 créditos ECTS, diplomados universitarios, títulos propios universitarios de experto o especialista, y similares; 10=Grados universitarios de más de 240 créditos ECTS, licenciados, másteres y especialidades en Ciencias de la Salud por el sistema de residencia, y similares; 11=Másteres, especialidades en Ciencias de la Salud por el sistema de residencia y similares; 12=Doctorado universitario; 99=no consta"
+BLANCO,70,87,18,Campo a blancos,
