@@ -397,15 +397,13 @@ segments(xticks,
 text(xticks, ylims[1]-.5, round(xticks,1), pos = 1)
 # let's do this on the fly
 
-
 #####################################################
-
 # 3) look at surface: are those really undulations?
 #    Hypothesis: these are postponements, and each implies
 #    a temporary drop in period measures. If you look
 #    at cohort rates, they might not look like undulations at all
-
-SWE <- HFDarray[,,"SWE"]
+dimnames(HFDarray)
+SWE <- HFDarray[, , "SWE"]
 
 # 1) the most basic surface function is image().
 # it does simple rasters.
@@ -461,9 +459,9 @@ image(years.centered,
 
 # OK doesn't make a huge difference.
 # one could add a legend, but contours are a bit better methinks:
-contour(years.centered, 
-		ages.centered, 
-		t(SWE),
+contour(x=years.centered, 
+		    y=ages.centered, 
+		z=t(SWE),
 		breaks = brks,
 		method="flattest",
 		col = "#00000080", # OK, but I wish the labels were brighter
@@ -473,8 +471,27 @@ contour(years.centered,
 # there's actually a lot more one can do with this kind of plot.
 # requests?
 
-source("")
-
+source("LexRef5.R")
+image(years.centered, 
+      ages.centered, 
+      t(SWE),
+      xlim = range(years) + c(0,1),
+      ylim = range(ages) + c(0,1),
+      asp = 1,
+      breaks = brks, # set breaks and colors
+      col = cols,
+      xlab = "Year",
+      ylab = "Age")    
+LexRef5(ages,years,col="#FFFFFF40")
+# OK doesn't make a huge difference.
+# one could add a legend, but contours are a bit better methinks:
+contour(x=years.centered, 
+        y=ages.centered, 
+        z=t(SWE),
+        breaks = brks,
+        method="flattest",
+        col = "#000000", # OK, but I wish the labels were brighter
+        add = TRUE) # this is key
 
 ###########################################################
 # appended from to end from final script
@@ -482,13 +499,14 @@ source("")
 wmean <- function(x, w){
 	sum(x * w) / sum(w)
 }
+
 # a misnomer. But since the fertility curve
 denssd1 <- function(x,w){
-	mab <- wmean(x = x, w = w) # use the other function for mularity
+	mab <- wmean(x = x, w = w)  # use the other function for mularity
 	sqrt(
-			sum((x - mab)^2 * w) /               # sum of squared residuals, weighted
+			sum((x - mab)^2 * w) /  # sum of squared residuals, weighted
 					sum(w)              # sum of weights
-	)                                            # square the results
+	)                           # square the results
 }
 
 # but actually we could have been even more modular.
@@ -500,7 +518,7 @@ denssd2 <- function(x,w){
 	sqrt(avvsq)
 }
 
-denssd()
+
 
 
 # give it a test:
@@ -514,10 +532,125 @@ wmean <- function(x, w){
 	sum(x * w, na.rm = TRUE) / sum(w, na.rm = TRUE)
 }
 
-
-
 denssd1(x = 12.5:55.5, w = SWE[,"1891"]) # fails
 denssd2(x = 12.5:55.5, w = SWE[,"1891"]) # works, because we were modular!!!
+
+sdSWE <- apply(SWE,2,denssd2,x=12.5:55.5)
+plot(years, sdSWE, type = 'l')
+
+plot(years, MAB[,"SWE"],type = 'l',
+     ylim = c(22,40))
+polygon(x=c(years, rev(years)),
+        y = c(MAB[,"SWE"]-sdSWE, rev(MAB[,"SWE"]+sdSWE)),
+        col = paste0(gray(.5),50),
+        border = NA)
+
+# plot lower quartile, and upper quartile for
+# lower and upper bounds of confidence region
+
+plot(SWE[,1],type='l')
+SWE[is.na(SWE)] <- 0
+plot(cumsum(SWE[,1]), type='l')
+
+SWEcumsum <- apply(SWE, 2, cumsum)
+
+SWE1 <- t(t(SWEcumsum) / SWEcumsum[nrow(SWEcumsum), ])
+
+spf <- splinefun(x=12.5:55.5~SWE1[,1])
+spf(c(.1,.5,.9))
+fertquantile <- function(fx, probs = c(.5)){
+  spf <- splinefun(x=12.5:55.5~fx)
+  spf(probs)
+}
+
+SWEq <- apply(SWE1, 2,fertquantile, probs =  c(.1,.5,.9))
+
+plot(years, SWEq[2,], type = 'l',ylim=c(17,42))
+lines(years,MAB[,"SWE"], col = "red")
+polygon(x=c(years, rev(years)),
+        y = c(SWEq[1,], rev(SWEq[3,])),
+        col = paste0(gray(.5),50),
+        border = NA)
+
+####################################
+plot(tfr, 
+     mab,
+     cex = .5,
+     pch = 19,
+     col = "#00000050",
+     axes = FALSE,
+     xlab = "TFR",
+     ylab = "MAB")
+ylims <- range(mab, na.rm = TRUE)
+xlims <- range(tfr, na.rm = TRUE)
+# permission to draw outside of plotting area
+par(xpd = TRUE)
+# axis line
+segments(xlims[1]-.2, 
+         ylims[1], 
+         xlims[1]-.2, 
+         ylims[2])
+# artisanal ticks:
+yticks <- fivenum(mab)
+segments(xlims[1]-.2,
+         yticks,
+         xlims[1]-.25,
+         yticks)
+text(xlims[1]-.25, yticks, round(yticks,1), pos = 2)
+
+# again for x axis:
+xticks <- fivenum(tfr)
+# axis line
+segments(xlims[1], 
+         ylims[1] - .3, 
+         xlims[2], 
+         ylims[1]-.3)
+
+# tick marks
+segments(xticks,
+         ylims[1] - .3,
+         xticks,
+         ylims[1] - .5)
+text(xticks, ylims[1]-.5, round(xticks,1), pos = 1)
+# let's do this on the fly
+mod1 <- lm(mab~tfr)
+newdata <- data.frame(tfr=seq(.8,4.5,by=.1))
+pred <- predict(mod1, newdata = newdata, se.fit = TRUE)
+polygon(x = c( newdata$tfr , rev( newdata$tfr )),
+        y = c( pred$fit - pred$se.fit*2, 
+              rev( pred$fit +  pred$se.fit *2)),
+        col = paste0(gray(.5),50),
+        border = NA)
+abline(mod1, xpd=FALSE)
+
+###########################################
+install.packages("coefplot")
+library(coefplot)
+coefplot(mod1)
+plot(mod1)
+
+data(diamonds)
+head(diamonds)
+
+model1 <- lm(price ~ carat + cut*color, data=diamonds)
+model2 <- lm(price ~ carat*color, data=diamonds)
+model3 <- glm(price > 10000 ~ carat*color, data=diamonds)
+coefplot(model1)
+coefplot(model2)
+coefplot(model3)
+coefplot(model1, predictors="color")
+coefplot(model1, predictors="color", strict=TRUE)
+coefplot(model1, coefficients=c("(Intercept)", "color.Q"))
+coefplot(model1, predictors="cut", coefficients=c("(Intercept)", "color.Q"), strict=TRUE)
+coefplot(model1, predictors="cut", coefficients=c("(Intercept)", "color.Q"), strict=FALSE)
+coefplot(model1, predictors="cut", coefficients=c("(Intercept)", "color.Q"), 
+         strict=TRUE, newNames=c(color.Q="Color", "cut^4"="Fourth"))
+coefplot(model1, predictors=c("(Intercept)", "carat"), newNames=c(carat="Size"))
+coefplot(model1, predictors=c("(Intercept)", "carat"), 
+         newNames=c(carat="Size", "(Intercept)"="Constant"))
+####################################################
+
+
 
 ####################################################
 # time out, how about that again, but for matrices?
