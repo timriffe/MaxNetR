@@ -473,3 +473,69 @@ contour(years.centered,
 # there's actually a lot more one can do with this kind of plot.
 # requests?
 
+source("")
+
+
+###########################################################
+# appended from to end from final script
+
+wmean <- function(x, w){
+	sum(x * w) / sum(w)
+}
+# a misnomer. But since the fertility curve
+denssd1 <- function(x,w){
+	mab <- wmean(x = x, w = w) # use the other function for mularity
+	sqrt(
+			sum((x - mab)^2 * w) /               # sum of squared residuals, weighted
+					sum(w)              # sum of weights
+	)                                            # square the results
+}
+
+# but actually we could have been even more modular.
+# pro-tip: always be a modular as possible! That way you only need
+# to change things in one place if you notice a problem
+denssd2 <- function(x,w){
+	mab   <- wmean(x = x, w = w) # use the other function for mularity
+	avvsq <- wmean(x = (x - mab)^2, w = w)
+	sqrt(avvsq)
+}
+
+denssd()
+
+
+# give it a test:
+denssd1(x = 12.5:55.5, w = SWE[,"1891"])
+denssd2(x = 12.5:55.5, w = SWE[,"1891"])
+
+# ahhh
+SWE[,"1891"] # looks like the early years have NAs rather than 0s?
+# we can make the function to throw them out:
+wmean <- function(x, w){
+	sum(x * w, na.rm = TRUE) / sum(w, na.rm = TRUE)
+}
+
+
+
+denssd1(x = 12.5:55.5, w = SWE[,"1891"]) # fails
+denssd2(x = 12.5:55.5, w = SWE[,"1891"]) # works, because we were modular!!!
+
+####################################################
+# time out, how about that again, but for matrices?
+# the same thing for matrices.
+Wmean <- function(x,w){
+	# add a nice check for conformity:
+	stopifnot(length(x) == nrow(w) | 
+					nrow(x) == nrow(w)   | 
+					nrow(x) == length(w) | 
+					length(x) == length(w))
+	xW <- x * w
+	colSums(xW, na.rm = TRUE) / colSums(w, na.rm = TRUE)
+}
+Wmean(12.5:55.5, SWE)
+
+
+# cool, I can overwrite wmean to work like this and get the sd for each year:
+wmean <- Wmean
+
+x <- 12.5:55.5
+w <- SWE
