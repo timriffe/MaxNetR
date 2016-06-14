@@ -1,38 +1,57 @@
-
+# day 2 afternoon
 # Author: tim
 ###############################################################################
 
+# more functions, plots, and loops
+setwd("/home/tim/git/MaxNetR/MaxNetR/day2afternoon")
 
-# the data we're going to play with was compiled straight from the 
-# Human Fertiltiy Database into R like so:
-# install.packages("HMDHFDplus")
-library(HMDHFDplus)
-Countries <- unique(c(getHFDcountries(),"ESP","IRL")) # later two are in prelim status, but OK
-# you just need to register and define the objects
-# pw (password)
-# us (username) as text strings.
-# Then it downloads and sticks it together
-HFD <- do.call(rbind, lapply(Countries, function(XYZ, .us, .pw){
-					Dati <- readHFDweb(XYZ, "asfrRR",username = .us, password = .pw)
-					Dati$CNTRY <- XYZ
-					Dati
-				}, .us = us, .pw = pw))
-# crap, the orig file doesn't contain exposures...
-Exp <- do.call(rbind, lapply(Countries, function(XYZ, .us, .pw){
-					Dati <- readHFDweb(XYZ, "exposRR",username = .us, password = .pw)
-					Dati$CNTRY <- XYZ
-					Dati
-				}, .us = us, .pw = pw))
-# quick check to make sure dims match and sorted same:
-nrow(HFD) == nrow(Exp)
-HFD          <- HFD[with(HFD, order(CNTRY, Year, Age)), ]
-Exp          <- Exp[with(Exp, order(CNTRY, Year, Age)), ]
+# this will load an object called HFD into our workspace
+load("/home/tim/git/MaxNetR/MaxNetR/day2morning/HFDall.Rdata")
 
-# this better be TRUE!!!
-all(with(HFD, paste0(CNTRY,Year,Age)) == with(Exp, paste0(CNTRY,Year,Age)))
+# OK, now let's see some more effective processing of long-format data.
 
-HFD$Exposure <- Exp$Exposure
-HFD$Births   <- HFD$Exposure * HFD$ASFR
-# now save it out:
-save(HFD, file = "")
-##############################
+wmean <- function(x, w){
+	sum(x * w) / sum(w)
+}
+# a misnomer. But since the fertility curve
+denssd1 <- function(x,w){
+	mab <- wmean(x = x, w = w) # use the other function for mularity
+	sqrt(
+			sum((x - mab)^2 * w) /               # sum of squared residuals, weighted
+			   sum(w)              # sum of weights
+	)                                            # square the results
+}
+
+# but actually we could have been even more modular.
+# pro-tip: always be a modular as possible! That way you only need
+# to change things in one place if you notice a problem
+denssd2 <- function(x,w){
+	mab   <- wmean(x = x, w = w) # use the other function for mularity
+	avvsq <- wmean(x = (x - mab)^2, w = w)
+	sqrt(avvsq)
+}
+
+denssd()
+
+
+# give it a test:
+denssd1(x = 12.5:55.5, w = SWE[,"1891"])
+denssd2(x = 12.5:55.5, w = SWE[,"1891"])
+
+# ahhh
+SWE[,"1891"] # looks like the early years have NAs rather than 0s?
+# we can make the function to throw them out:
+wmean <- function(x, w){
+	sum(x * w, na.rm = TRUE) / sum(w, na.rm = TRUE)
+}
+
+
+denssd1(x = 12.5:55.5, w = SWE[,"1891"]) # fails
+denssd2(x = 12.5:55.5, w = SWE[,"1891"]) # works, because we were modular!!!
+
+# So now I think it's a good idea to see how to process blocks of data.
+
+# there are numerous old-fashioned R ways to do this,
+#
+
+
